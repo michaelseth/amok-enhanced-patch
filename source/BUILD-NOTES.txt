@@ -1,0 +1,21 @@
+The manifest encodes only the changed byte runs and added executable bytes.
+Applying it to the supported original must reproduce the exact confirmed
+enhanced executable hash. Asset entries contain file names and hashes only.
+
+To rebuild a patch package (Python 3, standard library only):
+python build_patch.py --original "D:\AMOKFILS\FILES95\AMOK.BIN" --game "path\to\confirmed-build" --portable "path\to\portable-build" --output "new-release-folder"
+
+--game supplies the confirmed enhanced AMOK.EXE. --portable supplies its
+Game data folder, DLLs, configuration, Play-Amok.cmd and player README.txt.
+Game assets are recorded by hash, not copied into the patch release.
+The builder requires the supported original hash and an unused output path.
+It reconstructs the executable and tests ZIP integrity before completing.
+No original game executable or assets are included in Source.
+
+To rebuild the enhancement helper using LLVM/MinGW with Windows headers:
+clang --target=i686-w64-mingw32 -shared -O2 -mstackrealign -msse2 -DAMOK_MOD -DAMOK_FAR_TERRAIN -DAMOK_SOFT_FOG -DAMOK_FAST_TERRAIN -DAMOK_RENDER_PROFILE -DAMOK_TERRAIN_STAGE -DAMOK_RAY_PRECISION amok_xinput.c -o AMOKMOD.dll -luser32
+
+The helper targets this exact patched executable and its memory addresses.
+Recompiling may produce a different DLL hash with another compiler version.
+Update the package manifest through the builder when changing the helper.
+This is a preview source bundle, with no custom-code license selected yet.
